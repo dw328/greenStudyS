@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<!-- 프로젝트에 관련된것은 여기에 작성한다. -->
+	<!-- jdbc property -->
+	<!-- dataSource (4개) 드라이버, url?, 유저, 비번-->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>  		<!-- set 필드 -->
+		<property name="url" value="jdbc:mysql://localhost:3306/greenStudyS"/>  		
+		<property name="username" value="root"/>  		
+		<property name="password" value="1234"/>  		
+	</bean>
+		
+		<!-- SqlSessionFactory 설정(Sptring Bean으로 등록) -->
+	<bean id = "sqlSessionFactory" class = "org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>  	<!-- ref은 위의 name 과 같으면 되서 변수는 상관이 없는데 name은 다르면 안된다.필드명 --> 
+		<property name="mapperLocations" value="classpath:mappers/**/*Mapper.xml"/>		<!-- 위치/ 확장자은 앞에 뭐가 와도 관께 없고 뒤에 Mapper가 있는 확장자xml, ** 여러개 와라~ -->
+		<property name="typeAliasesPackage" value = "com.spring.greenStudyS.vo" />		<!-- 닉네임이 너무 길어서 별명믈 만들어서 사용 -->   
+	</bean>
+		
+	<!-- SqlSessionTemplate 설정-->	
+	<bean id = "sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory"/>		<!-- 생성자 CRUD mapper로 해결 -->
+		<!-- 만약에 404가 나온다면 mapper에서 해결해야한다. 그래서 mapper를 만들고 실행해서 404가 나오면 해결해야한다. -->
+	</bean>
+	
+	<!-- mapper(user2) 정보를 주입하기 위한 DAO객체의 위치설정 -->
+	<mybatis-spring:scan base-package="com.spring.greenStudyS.dao"/>
+	
+	<!-- 메일처리를 윈한 bean 등록하기 -->
+	<bean id = "mailSender" class ="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value = "smtp.gmail.com" />
+		<property name="port" value = "587" />
+		<property name="username" value = "dwg8387@gmail.com" />
+		<property name="password" value = "ypfylkatmhkxrmwd" /> 				<!-- 옛날에는 진짜 비빌번호 넣었음, 지금은 앱 비밀번호 사용 -->
+		<property name="javaMailProperties">
+			<props>																												<!-- 자바 연동 -->
+				<prop key="mail.transport.protocol">smtp</prop>							<!-- 보내는 전송계층 -->
+				<prop key="mail.smtp.starttls.enable">true</prop>   				<!-- 라우터 보내는 신호 활성함 -->
+				<prop key="mail.smtp.ssl.protocols">TLSv1.2</prop>  				<!-- 전송 프로토콜 -->
+				<prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop> 		 	<!-- 보안(smtp.gmail.com은 허용하겠다.) -->
+				<prop key="mail.debug">true</prop>													<!-- 로그(콘솔) 찍기(확인용) -->
+			</props>
+		</property>
+	</bean>
+	
+	
+	
+	
+</beans>
