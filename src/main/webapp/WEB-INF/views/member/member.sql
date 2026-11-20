@@ -46,3 +46,11 @@ select name, mid, now() ,lastDate, timestampdiff(day, lastDate,now()) from membe
 select name, mid, now() ,lastDate, timestampdiff(day, lastDate,now()) from member where userDel = 'OK';
 
 select mid, nickName, name, email from member;
+
+select * from member where startDate = now();
+
+select * from member where userDel = 'OK';
+
+SELECT SUBSTRING(startDate, 1, 10) AS today FROM member;
+
+select * from member where SUBSTRING(now(), 1, 10) =  SUBSTRING(startDate, 1, 10);

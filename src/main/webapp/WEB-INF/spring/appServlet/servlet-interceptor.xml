@@ -16,10 +16,11 @@
 	<interceptors>
 	
 	
-	
 		<interceptor>  <!-- 준회원 -->
 			<mapping path="/board/boardList"/>
 			<mapping path="/member/memberMain"/>
+			<mapping path="/guest/guestInput"/>
+			<mapping path="/guest/guestDelete"/>
 			<beans:ref bean="level3Interceptor"/>
 		</interceptor>
 		
@@ -42,7 +43,7 @@
 			<beans:ref bean="level1Interceptor"/>
 		</interceptor>
 	
-		<interceptor>	<!-- 관리자 -->
+		<interceptor>	 <!-- 관리자 -->
 			<mapping path="/admin/**"/>
 			<beans:ref bean="level0Interceptor"/>
 		</interceptor>

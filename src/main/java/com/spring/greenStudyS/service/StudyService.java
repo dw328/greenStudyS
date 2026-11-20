@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.spring.greenStudyS.vo.MemberVO;
 import com.spring.greenStudyS.vo.User2VO;
@@ -30,6 +31,8 @@ public interface StudyService {
 	int fileUpload(MultipartFile fName, String name, HttpServletRequest request);
 
 	List<MemberVO> getEmailList();
+
+	int multiFileUpload(MultipartHttpServletRequest mFile);
 
 
 

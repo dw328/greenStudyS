@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.spring.greenStudyS.dao.BoardDAO;
 import com.spring.greenStudyS.dao.MemberDAO;
+import com.spring.greenStudyS.dao.PdsDAO;
 import com.spring.greenStudyS.service.GuestService;
 import com.spring.greenStudyS.service.MemberService;
 
@@ -20,6 +21,9 @@ public class PageNation {
 	@Autowired
 	BoardDAO boardDAO;
 	
+	@Autowired
+	PdsDAO pdsDAO;
+	
 	public PageVO getTotRecCnt(PageVO vo) {
 		
 		int totRecCnt = 0;
@@ -33,6 +37,10 @@ public class PageNation {
 		
 		else if(vo.getSection().equals("board")) {
 			totRecCnt = boardDAO.getTotRecCnt();	
+		}
+		
+		else if(vo.getSection().equals("pds")) {
+			totRecCnt = pdsDAO.getTotRecCnt(vo.getPart());	
 		}
 		
 		

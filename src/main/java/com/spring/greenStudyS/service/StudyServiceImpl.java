@@ -1,6 +1,5 @@
 package com.spring.greenStudyS.service;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,10 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.spring.greenStudyS.common.ProjectProvide;
 import com.spring.greenStudyS.dao.StudyUserDAO;
 import com.spring.greenStudyS.vo.MemberVO;
 import com.spring.greenStudyS.vo.User2VO;
@@ -24,6 +23,9 @@ public class StudyServiceImpl implements StudyService {
 
 	@Autowired 
 	StudyUserDAO studyUserDAO;
+	
+	@Autowired 
+	ProjectProvide projectProvide;
 	
 	@Override
 	public String[] getCityStringArray(String dodo) {
@@ -232,6 +234,28 @@ public class StudyServiceImpl implements StudyService {
 	@Override
 	public List<MemberVO> getEmailList() {
 		return studyUserDAO.getEmailList();
+	}
+
+	@Override
+	public int multiFileUpload(MultipartHttpServletRequest mFile) {
+		int res =0;
+		
+		List<MultipartFile> fileList = mFile.getFiles("fName"); //fName은 뷰의 name과 일치해야한다.
+		String oFileNames = "";
+		int fileSizes = 0;
+		
+		for( MultipartFile file :fileList) {
+			oFileNames += file.getOriginalFilename() + "/";
+			fileSizes += file.getSize();
+			projectProvide.uploadFile(file, "fileUpload", null);
+			res = 1;
+		}
+		oFileNames = oFileNames.substring(0, oFileNames.length()-1);
+		
+		System.out.println("원본 파일: " + oFileNames);
+		System.out.println("총 파일의 길이: " + fileSizes);
+		
+		return res;
 	}
 
 

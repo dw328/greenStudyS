@@ -43,12 +43,12 @@
       <th>글제목</th>
       <th>글쓴이</th>
       <th>글쓴날짜</th>
-      <th>조회수(좋아요)</th>
+      <th>조회수(좋아요</th>
     </tr>
     <c:set var="curScrStartNo" value="${pageVO.curScrStartNo}"/>
     <c:forEach var="vo" items="${vos}" varStatus="st">
       <tr class="text-center">
-        <td>${pageVO.curScrStartNo}</td>
+        <td>${curScrStartNo}</td>
         <td class="text-center">
           <a href="boardContent?idx=${vo.idx}&pag=${pageVO.pag}&pageSize=${pageVO.pageSize}">${vo.title}</a>
           <c:if test="${vo.replyCnt != 0}">(${vo.replyCnt})</c:if>
@@ -58,7 +58,7 @@
         <td>${fn:substring(vo.WDate,0,19)}</td> <!-- 롬복에서는 Wdate로 읽음(해결이 두번째 문자를 소문자로 사용) -->
         <td>${vo.readNum}(${vo.good})</td>
       </tr>
-      <c:set var="curScrStartNo" value="${pageVO.curScrStartNo - 1}"/>
+      <c:set var="curScrStartNo" value="${curScrStartNo - 1}"/>
     </c:forEach>
   </table>
   <br/>

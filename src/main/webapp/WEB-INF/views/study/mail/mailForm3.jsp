@@ -39,32 +39,8 @@
   	
   	// 선생님이 말씀하신 방법 메일에 오기 전에 이미 vos을 담고 주소록을 누르면 mocdal을 이용해서 화면에 짠하고 나오는 방법
   	function jusoroCheck() {
-			$.ajax({
-				url  : "emailList",
-				type : "post",
-				dataType : "json",
-				success : (vos) => {
-		  		$("#myModal2").show();
-					$("#myModal2").css("display", "flex");
-					
-					let str = '<tr class ="table table-secondary">';					
-					str += '<th>아이디</th><th>닉네임</th><th>성명</th><th>이메일</th><th>선택</th>';					
-					str += '</tr>';					
-					for(let i =0; i < vos.length; i++){
-						str += '<tr>';	
-						str += '<td>'+vos[i].mid+'</td>';	
-						str += '<td>'+vos[i].nickName+'</td>';	
-						str += '<td>'+vos[i].name+'</td>';	
-						str += '<td>'+vos[i].email+'</td>';	
-						if(i == 0) str += '<td><input type="radio" name="emailCheckRadio" value="'+vos[i].email+'" checked /></td>';
-						else str += '<td><input type="radio" name="emailCheckRadio" value="'+vos[i].email+'"  /></td>';
-						str += '</tr>';	
-					}
-					$("#jusoroTable").html(str);
-				},
-				error : () => alert("전송 오류")
-			});
-  		
+  		$("#myModal2").show();
+			$("#myModal2").css("display", "flex");
 		}
   	
   	function closeCheck() {
@@ -145,6 +121,22 @@
 				</div>
 		    <div class="modal-body">
 					<table class = "table table-hover" id = "jusoroTable">
+						<tr>
+							<th>성명</th>
+							<th>닉네임</th>
+							<th>아이디</th>
+							<th>이메일</th>
+							<th>선택</th>
+						</tr>
+						<c:forEach var = "vo" items ="${vos}" varStatus="st">
+							<tr>
+							<td>${vo.name}</td>
+							<td>${vo.nickName}</td>
+							<td>${vo.mid}</td>
+							<td>${vo.email}</td>
+							<td><input type ="radio" value ="${vo.email}" name="emailCheckRadio" /></td>
+							</tr>
+						</c:forEach>
 					</table>
 		    </div>
 		    <div class="modal-footer">

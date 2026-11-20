@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spring.greenStudyS.dao.AdminDAO;
+import com.spring.greenStudyS.vo.BoardVO;
 import com.spring.greenStudyS.vo.MemberVO;
 
 @Service
@@ -37,5 +38,25 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public int setMemerDeleteOk(int idx) {
 		return adminDAO.setMemerDeleteOk(idx);
+	}
+
+	@Override
+	public List<MemberVO> getuserCreateList() {
+		return adminDAO.getuserCreateList();
+	}
+
+	@Override
+	public List<MemberVO> getuserDelList() {
+		return adminDAO.getuserDelList();
+	}
+
+	@Override
+	public int setBoardUpdateDelList(int idx) {
+		return adminDAO.setBoardUpdateDelList(idx);
+	}
+
+	@Override
+	public BoardVO getBoardContent(int idx) {
+		return adminDAO.getBoardContent(idx);
 	}
 }

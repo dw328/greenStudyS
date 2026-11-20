@@ -12,6 +12,7 @@
   <script>
   	'use strict';
   	
+  	// 개인회원등급 변경
   	function levelChange(e) {
 	  	let ans = confirm("회원등급을 변경하시겠습니까?");
 	  	if(!ans) {
@@ -96,6 +97,7 @@
     	});
     }
    
+    // 검색 조회 결과
     function searchLevel(e) {
 			let level = e.value;
 			
@@ -130,6 +132,7 @@
 			let pageSize = $("#pageSize").val();
 			location.href = "memberList?pageSize="+pageSize;
 		}
+    
     
     function memberDeleteOk(idx, photo) {
 			let ans = confirm("선택하신 회원을 영구 삭제 하시겠습니까?");

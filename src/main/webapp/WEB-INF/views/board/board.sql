@@ -29,6 +29,8 @@ select * from board;
 create table boardReply (
   idx      	int not null auto_increment,/* 댓글 고유번호 */
   boardIdx	int not null,						/* 원본글의 고유번호 */
+  re_step		int not null,						/* 레벨(re_step)에 따른 들여쓰기(부모 step+1) */
+  re_order	int not null,						/* 댓글의 순서(부모 re_order보다 큰댓글을 모두 +1 시키고, 자신은 부모 re_order+1 처리 */
   mid				varchar(20),						/* 댓글 올린이 아이디 */
   nickName  varchar(20) not null,		/* 댓글 올린이 별명 */
   wDate			datetime default now(),	/* 댓글 쓴날짜 */
@@ -44,7 +46,7 @@ create table boardReply (
 desc boardReply;
 drop table boardReply;
 
-insert into boardReply values (default,28,'kms1234','김장미',default,'192.168.50.57','잘 보고 갑니다.');
+insert into boardReply values (default,21,'htom7777','히톰',default,'192.168.50.57','잘 보고 갑니다.');
 
 select * from boardReply;
 
@@ -63,3 +65,7 @@ select b.*, (select count(*) from boardReply where boardIdx=b.idx) as replyCnt f
 
 -- 날짜(시간)로 비교해서 필드값 저장하기
 select *, timestampdiff(hour, wDate , now()) as hour_diff from board order by idx desc;
+
+/* DATE_FORMAT("날짜값,날짜컬럼", "%Y"); */
+
+

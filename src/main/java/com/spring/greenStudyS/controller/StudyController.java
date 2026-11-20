@@ -1,5 +1,6 @@
 package com.spring.greenStudyS.controller;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -11,6 +12,7 @@ import java.util.UUID;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.security.auth.message.callback.PrivateKeyCallback.Request;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.GET;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.spring.greenStudyS.common.ARIAUtil;
 import com.spring.greenStudyS.common.ProjectProvide;
@@ -44,8 +47,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/study")
 public class StudyController {
 
-	
-	
 	@Autowired		// 이게 인터페이스에서 가지만 가지고 오는건 구현객체가 온다.
 	StudyService studyService;
 	
@@ -209,12 +210,16 @@ public class StudyController {
 	}
 	
 	@GetMapping("/fileUpload")
-	public String fileUploadGet() {
+	public String fileUploadGet(Model model, HttpServletRequest request) {
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/fileUpload");		// 파일의 전체를 가지고 오려면 /를 뼀음(폴더>파일)
+		
+		String[] files = new File(realPath).list();		// 폴더를 가지고 오기 떄문에 list를 사용한다. (왜나면 파일들을 가지고 오니깐.그래서 배열로 받음)
+		model.addAttribute("files", files);
+		model.addAttribute("fileCount",files.length);
 	  return "study/fileUpload/fileUploadForm";
 	}
-
 	
-// 이 메소드는 StudyController에서 파일 업로드를 구현함.(밑에 있는 fileUpload2Post는 공용으로 사용해서 common 패키지에 넣음, StudyServiceImpl에서 한번 더 구현) 3번 구현함
+	// 이 메소드는 StudyController에서 파일 업로드를 구현함.(밑에 있는 fileUpload2Post는 공용으로 사용해서 common 패키지에 넣음, StudyServiceImpl에서 한번 더 구현) 3번 구현함
 	@PostMapping("/fileUpload")
 	public String fileUploadPost(MultipartFile fName, String name, HttpServletRequest request) throws IOException {
 		// String relPath = request.getSession().getServletContext().getRealPath("");																											// request session에 있어서 생성해야함.
@@ -223,21 +228,17 @@ public class StudyController {
 		String oFileName = fName.getOriginalFilename();																																										// 경로 이름이 길어서 여기서 변수를 선언
 		String file = oFileName.substring(0, oFileName.lastIndexOf(".")) + "_" + uid + oFileName.substring(oFileName.lastIndexOf("."));		// 앞에서부터 .까지 자르고 앞에 작성한 uid를 넣음 그리고 뒤의 확장자를 붙임
 																																																																			// ex) memderList.jsp  -> memderList_uid.jsp
-		
 //		System.out.println("file : " + file);
 //		System.out.println("realPath: " + realPath);
 		
 		FileOutputStream fos = new FileOutputStream(realPath+file);																																				// 폴더에 사진을 넣음(in,out)out이 파일을 넣음(사실 저도 이부분 헷갈려서 확실하게 설명을 못하겠어요ㅠㅜ) (경로와 파일 이름을 붙임)			
-//		System.out.println("fos: " + fos);
 		
-		fos.write(fName.getBytes());
+		fos.write(fName.getBytes());   // http로 넘어갈 때는 (바이츠)Byte[] -> (바이트)byte[] 변환 넣기
 		
 		fos.close();
 // 		"redirect: message/fileUploadOk";
 		return "study/fileUpload/fileUploadForm";
 	}
-	
-	
 	
 // 이 메소드는 StudyController에서 파일 업로드를 구현함
 	@PostMapping("/fileUpload2")
@@ -251,6 +252,76 @@ public class StudyController {
 		
 		return "study/fileUpload/fileUploadForm";
 	}
+	
+	// 개별파일 삭제
+	@ResponseBody
+	@PostMapping("/fileUpload/fileDelete")
+	public void fileDeletePost(HttpServletRequest request, String file) {
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/fileUpload/");
+		new File(realPath + file).delete();
+	}
+	
+	// 전체 파일 삭제
+	@ResponseBody
+	@PostMapping("/fileUpload/fileDeleteAll")
+	public String fileDeleteAllPost(HttpServletRequest request, String file) {
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/fileUpload/");
+		
+		File targetFolder = new File(realPath);
+		if(!targetFolder.exists()) return "0";
+		
+		File[] files = targetFolder.listFiles();
+		if(files.length == 0) return "0";
+		
+		for(File f : files) {
+			if(!f.isDirectory()) f.delete(); // 폴더 삭제
+		}
+		
+		return "1";
+	}
+	
+	// 선택 파일 삭제
+	@ResponseBody
+	@PostMapping("/fileUpload/fileSelectDelete")
+	public String fileSelectDeletePost(HttpServletRequest request, String delItems) {
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/fileUpload/");
+		String[] delNames = delItems.split("/");
+		
+		for(String f : delNames) {
+			new File(realPath+ f).delete();
+		}
+		
+		return "1";
+	}
+	
+	@GetMapping("/fileUpload/multiFile")
+	public String multiFileGet() {
+		return "study/fileUpload/multiFile";
+	}
+	
+	@PostMapping("/fileUpload/multiFile")
+	public String multiFilePost(MultipartHttpServletRequest mFile) {	// 여러개 받을 떄
+		int res = studyService.multiFileUpload(mFile);
+		
+		if(res != 0) return "redirect:/message/multiFileUploadOk";
+		else return "redirect:/message/multiFileUploadNo";
+	}
+	
+	@GetMapping("/fileUpload/multiFile2")
+	public String multiFile2Get() {
+		return "study/fileUpload/multiFile2";
+	}
+
+	@PostMapping("/fileUpload/multiFile2")
+	public String multiFile2Post(MultipartHttpServletRequest mFile,HttpServletRequest request) {
+		String[] imgNames = request.getParameter("imgNames").split("/");
+		for(String imgName : imgNames) {
+			System.out.println("imgName: " + imgName);
+		}
+		return "study/fileUpload/multiFile2";
+	}
+	
+		
 	
 	@GetMapping("/mailForm")
 	public String mailFormGet(Model model) {
@@ -321,7 +392,7 @@ public class StudyController {
 		
 	}
 	
-//비밀번호 암호화
+	// 비밀번호 암호화
 	@GetMapping("/passForm")
 	public String passFormGet() {
 		return "study/password/passwordForm";
@@ -353,7 +424,6 @@ public class StudyController {
 		String encPwd = ARIAUtil.ariaEncrypt(salt + pwd);
 		String decPwd = ARIAUtil.ariaDecrypt(encPwd);
 
-		
 		pwd = "salt키: " + salt + "/ 암호화된 비밀번호 : " + encPwd + 
 				"<br/> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;" + decPwd.substring(8);
 		
@@ -367,7 +437,6 @@ public class StudyController {
 	@PostMapping( value = "/passwordEncoder", produces = "application/text; charset=utf-8")
 	public String passwordEncoderPost(String pwd) throws InvalidKeyException, UnsupportedEncodingException {
 		String encPwd = passwordEncoder.encode(pwd);
-		
 		
 		pwd = " 암호화된 비밀번호 : " + encPwd;
 		

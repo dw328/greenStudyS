@@ -8,6 +8,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 	<jsp:include page="/WEB-INF/views/include/bs5.jsp" />
+	<script src="${ctp}/ckeditor/ckeditor.js"></script>
   <title>boardInput.jsp</title>
   <style>
     th {
@@ -34,7 +35,16 @@
       </tr>
       <tr>
         <th>글내용</th>
-        <td><textarea name="content" id="content" rows="6" class="form-control" required></textarea></td>
+        <td>
+        	<textarea name="content" id="CKEDITOR" rows="6" class="form-control" required></textarea><!-- (이름(name), 실행) -->
+        	<script>  
+        		CKEDITOR.replace("content",{
+							height:450,
+							filebrowserUploadUrl:"${ctp}/imageUpload",
+							uploadUrl: "${ctp}/imageUpload"		/* 여러가지 사진 올리기 */
+        		});
+        	</script>
+        </td>
       </tr>
       <tr>
         <th>공개여부</th>
@@ -47,7 +57,7 @@
         <td colspan="2" class="text-center">
           <input type="submit" value="글올리기" class="btn btn-success me-2"/>
           <input type="reset" value="다시입력" class="btn btn-warning me-2"/>
-          <input type="button" value="돌아가기" onclick="location.href='boardList.bo';" class="btn btn-info"/>
+          <input type="button" value="돌아가기" onclick="location.href='boardList';" class="btn btn-info"/>
         </td>
       </tr>
     </table>

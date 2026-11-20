@@ -16,6 +16,7 @@ public class BoardVO {
 	private int good;
 	private String complaint;
 	
+	// 위 쪽은 DB에 만들어진 필드를 만듬. , 아래는 내가 생성한 필드
 	private int replyCnt;
 	private int hour_diff;
 

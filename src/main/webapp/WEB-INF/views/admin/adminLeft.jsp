@@ -7,6 +7,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <jsp:include page="/WEB-INF/views/include/bs5.jsp" />
+  <link rel="stylesheet" type="text/css" href="${ctp}/css/linkOrange.css"/>
   <title>adminLeft.jsp</title>
   <style>
     body {
@@ -17,7 +18,7 @@
 <body>
 <p><br/></p>
 <div class="container text-center">
-  <h4>관리자메뉴</h4>
+  <h4><a href="adminRight" target="adminRight">관리자메뉴</a></h4>
   <hr/>
   <div><a href="${ctp}/" target="_top">홈으로</a></div>
   <hr/>
@@ -25,7 +26,10 @@
   <div><a href="memberList" target="adminRight">회원리스트</a></div>
   <hr/>
   <div>게시판관리</div>
-  <div><a href="boardList" target="adminLeft">게시판리스트</a></div>
+  <div><a href="boardList" target="adminRight">게시판리스트</a></div>
+  <hr/>  
+  <div>방목록관리</div>
+  <div><a href="guestList" target="adminRight">방목록리스트</a></div>
   <hr/>  
 </div>
 <p><br/></p>

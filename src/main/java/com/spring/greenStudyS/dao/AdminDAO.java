@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.spring.greenStudyS.vo.BoardVO;
 import com.spring.greenStudyS.vo.MemberVO;
 
 public interface AdminDAO {
@@ -17,5 +18,13 @@ public interface AdminDAO {
 	List<MemberVO> getMemberList(@Param("startIndexNo")int startIndexNo, @Param("pageSize")int pageSize);
 
 	int setMemerDeleteOk(@Param("idx") int idx);
+
+	List<MemberVO> getuserCreateList();
+
+	List<MemberVO> getuserDelList();
+
+	int setBoardUpdateDelList(@Param("idx") int idx);
+
+	BoardVO getBoardContent(@Param("idx") int idx);
 
 }

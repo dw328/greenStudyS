@@ -14,6 +14,7 @@ public class MessageController {
 	@RequestMapping(value = "/{msgFlag}", method = RequestMethod.GET)
 	public String messageGet(Model model, 
 		@PathVariable String msgFlag,
+		@RequestParam(name = "idx" , defaultValue = "0", required =false) int idx,
 		@RequestParam(name = "mid" , defaultValue = "", required =false) String mid
 	) {
 		if(msgFlag.equals("memberJoin")) {
@@ -63,6 +64,46 @@ public class MessageController {
 		else if(msgFlag.equals("memberLevelNo")) {
 			model.addAttribute("message", "회원 등급을 확인하세요.");
 			model.addAttribute("url", "/member/memberMain");
+		}
+		else if(msgFlag.equals("boardInputOk")) {
+			model.addAttribute("message", "게시물에 글이 등록되었습니다.");
+			model.addAttribute("url", "/board/boardList");
+		}
+		else if(msgFlag.equals("boardInputNo")) {
+			model.addAttribute("message", "글 등록 실패했습니다.");
+			model.addAttribute("url", "/board/boardInput");
+		}
+		else if(msgFlag.equals("boardDeleteOk")) {
+			model.addAttribute("message", "글 삭제를 완료했습니다.");
+			model.addAttribute("url", "/board/boardList");
+		}
+		else if(msgFlag.equals("boardDeleteNo")) {
+			model.addAttribute("message", "글 삭제를 실패했습니다.");
+			model.addAttribute("url", "/board/boardContent?idx="+idx);
+		}
+		else if(msgFlag.equals("boardUpdateOk")) {
+			model.addAttribute("message", "글 수정를 완료했습니다.");
+			model.addAttribute("url", "/board/boardContent?idx="+idx);
+		}
+		else if(msgFlag.equals("boardUpdateNo")) {
+			model.addAttribute("message", "글 수정를 실패했습니다.");
+			model.addAttribute("url", "/board/boardUpdate?idx="+idx);
+		}
+		else if(msgFlag.equals("multiFileUploadOk")) {
+			model.addAttribute("message", "파일이 업로드됐습니다.");
+			model.addAttribute("url", "/study/fileUpload/multiFile");
+		}
+		else if(msgFlag.equals("multiFileUploadNo")) {
+			model.addAttribute("message", "파일이 업로드 실패");
+			model.addAttribute("url", "/study/fileUpload/multiFile");
+		}
+		else if(msgFlag.equals("pdsInputOk")) {
+			model.addAttribute("message", "자료실에 글이 입력됐습니다.");
+			model.addAttribute("url", "/pds/pdsList");
+		}
+		else if(msgFlag.equals("pdsInputNo")) {
+			model.addAttribute("message", "자료실에 입력 실패");
+			model.addAttribute("url", "/pds/pdsInput");
 		}
 		
 		return "include/message";
